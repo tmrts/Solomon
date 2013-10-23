@@ -21,9 +21,9 @@
 ################################################################################
 
 """ 
-Observer is an asynchronous visitor tracking system built for high-traffic websites.
+Solomon is an asynchronous visitor tracking system built for high-traffic websites.
 Nginx is used as the reverse-proxy and PostgreSQL is the database of choice.
-The app was built using Tornado 3.1 and Python 3.2. Observer tracks users
+The app was built using Tornado 3.1 and Python 3.2. Solomon tracks users
 by responding to a get request made by client for a 1x1 pixel and it initiates
 a websocket connection to track number of online users
 """
@@ -72,9 +72,9 @@ pixel_GIF = [0x47,0x49,0x46,0x38,0x39,0x61,
 
 
 db = dict()
-db["database"] = os.environ.get('MOMOKO_TEST_DB', 'observer_db')
-db["user"] = os.environ.get('MOMOKO_TEST_USER', 'observer_user')
-db["password"] = os.environ.get('MOMOKO_TEST_PASSWORD', 'observer')
+db["database"] = os.environ.get('MOMOKO_TEST_DB', 'solomon_db')
+db["user"] = os.environ.get('MOMOKO_TEST_USER', 'solomon_user')
+db["password"] = os.environ.get('MOMOKO_TEST_PASSWORD', 'solomon')
 db["host"] = os.environ.get('MOMOKO_TEST_HOST', 'localhost')
 db["port"] = os.environ.get('MOMOKO_TEST_PORT', 5432)
 
@@ -137,9 +137,9 @@ class PixelHandler(BaseHandler):
     @web.asynchronous
     @gen.coroutine
     def get(self):
-        self.user["id"] = self.get_current_user("Observer.ID")
+        self.user["id"] = self.get_current_user("Solomon.ID")
 
-        self.user["session"] = self.get_secure_cookie("Observer.Session")
+        self.user["session"] = self.get_secure_cookie("Solomon.Session")
 
         self.user["time"] = self.sql_repr(strftime("%a, %d %b %Y %X", localtime()))
 
@@ -205,7 +205,7 @@ class PixelHandler(BaseHandler):
                                                 {remote_ip}
                                                 )""".format(**self.user))
 
-            self.set_secure_cookie("Observer.ID",
+            self.set_secure_cookie("Solomon.ID",
                                    self.user["id"],
                                    expires_days=(365 * 2))
 
@@ -228,7 +228,7 @@ class PixelHandler(BaseHandler):
                     WHERE visitor_id = {id}
                 """.format(**self.user))
 
-        self.set_secure_cookie("Observer.Session", "None", expires_days=(1 / 24))
+        self.set_secure_cookie("Solomon.Session", "None", expires_days=(1 / 24))
 
 
         #1x1 Transparent Tracking Pixel
@@ -306,7 +306,7 @@ class WebSocketHandler(WebSocketBaseHandler):
 
     @gen.coroutine
     def on_open(self, info):
-        self.user["id"] = self.get_current_user(info, "Observer.ID")
+        self.user["id"] = self.get_current_user(info, "Solomon.ID")
 
         try:
             yield [momoko.Op(self.db.execute,
