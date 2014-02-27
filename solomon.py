@@ -192,7 +192,7 @@ class PixelHandler(BaseHandler):
             self.user["referer_keyword"] = self.sql_repr(referer.search_term)
             self.user["resolution"] = self.sql_repr(resolution)
 
-            #TO DO: If geolocation isn't sent from the user check it from Maxmind Database
+            #TO DO: If geolocation isn't sent from the user check it from Maxmind GEO-IP Database
 
             with suppress(Exception):
                 self.user["dist_name"] = self.sql_repr(user_agent["dist"]["name"])
