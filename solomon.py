@@ -100,15 +100,20 @@ assert (db["database"] or db["user"] or db["password"] or db["host"] or db["port
 class BaseHandler(tornado.web.RequestHandler):
 
     def to_unicode(self, string):
+        """Convert a string to unicode minimally
+        rather than tornado.escape.to_unicode()
+        """
         return tornado.escape.to_unicode(string)
 
     @property
     def db(self):
+        """Return a db connection"""
         if not hasattr(self.application, 'db'):
             self.application.db = momoko.Client(dsn)
         return self.application.db
 
     def get_current_user(self, cookie=None):
+        """Return the decoded user id retrieved from cookie argument"""
         user_json = self.get_secure_cookie(cookie)
         if user_json:
             user = self.to_unicode(user_json)
@@ -117,15 +122,18 @@ class BaseHandler(tornado.web.RequestHandler):
         return user
 
     def sql_repr(self, item, keys=None):
+        """Return string version of the given item
+        to insert into DB
+        """
         if item is not None:
             representation = repr(item)
-
         else:
             representation = repr("None")
 
         return representation
 
     def pack_into_binary(self, data):
+        """Convert given data into binary form"""
         packed = str()
         for datum in data:
             packed += struct.pack('B', datum).decode("ISO-8859-1")
@@ -295,6 +303,7 @@ class PixelHandler(BaseHandler):
 class WebSocketBaseHandler(SockJSConnection):
 
     def decode_signed_value(self, cookie_secret, cookie_name, cookie_value):
+        """Decode signed cookie value minimally"""
         return tornado.web.decode_signed_value(cookie_secret, 
                                                cookie_name, 
                                                cookie_value
@@ -308,6 +317,7 @@ class WebSocketBaseHandler(SockJSConnection):
 
     @property
     def db(self):
+        """Return the db connection"""
         return application.db
 
     def get_current_user(self, info, cookie_name):
