@@ -1,0 +1,12 @@
+Below are the draft of the features I intend to implement as I find the time to do it.
+
+[+] Configuration: Allow users to enable/disable some of the features in addition to cmd-line flags.
+
+[+] Dashboard: Develop a lightweight dashboard to replace graphite.
+
+[+] Unit Tests: Finish unit tests and implement them.
+
+[+] GeoIP Locating: Integrate local GeoIP database as an alternative to look-up done by javascript as a client.
+
+[+] Deployment: Add installation script.
+
